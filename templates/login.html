@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <!-- Flash messages -->
+     {% with messages = get_flashed_messages(with_categories=True)%}
+     {% if messages %}
+        {% for catogery, message in messages %}
+            {{ message }}
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- form -->
+    <center>
+        <form method="POST" action="{{url_for('login')}}">
+
+            {{ form.username.label }} <br>
+            {{ from.username(size=20,placeholder='Enter the username') }} <br>
+
+            {{ form.password.label }} <br>
+            {{ form.password(size=20, placeholder='Enter the password') }} <br>
+
+            {{ form.submit() }}
+        </form>
+    </center>
+</body>
+</html>
