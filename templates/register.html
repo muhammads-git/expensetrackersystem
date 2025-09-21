@@ -3,32 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='flashStyle.css') }}">
 </head>
 <body>
+    <center>
     <!-- Flash messages -->
-     {% with messages = get_flashed_messages(with_categories=True)%}
-     {% if messages %}
-        {% for catogery, message in messages %}
-            {{ message }}
+    {% with messages = get_flashed_messages(with_categories=True)%}
+    {% if messages %}
+        <ul class ='flashes'>
+        {% for category, message in messages %}
+            <li class = "{{category}}">{{message}}</li>
         {% endfor %}
+        </ul>
     {% endif %}
     {% endwith %}
+    </center>
 
     <!-- form -->
     <center>
-        <form method="POST" action="{{url_for('register')}}">
-
+        <form method="POST" action="{{ url_for('register') }}">
+            {{ form.hidden_tag()}}
             {{ form.username.label }} <br>
-            {{ from.username(size=20,placeholder='Enter the username') }} <br>
+            {{ form.username(size=20,placeholder='Enter the username') }} <br>
 
             {{ form.password.label }} <br>
             {{ form.password(size=20, placeholder='Enter the password') }} <br>
 
             {{ form.email.label }} <br>
-            {{ form.email(size=20,placeholder='Enter the email') }} <br>
+            {{ form.email(size=20,placeholder='Enter the email') }} <br> <br>
 
             {{ form.submit() }}
         </form>
+        <a method="get" href="{{ url_for('login') }}">If you already have an account Login</a>
     </center>
 </body>
 </html>

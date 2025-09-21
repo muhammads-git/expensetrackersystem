@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <h1 style="color: crimson;" >Be Patient! </h1>
+    <link rel="stylesheet" href="{{ url_for('static', filename='flashStyle.css') }}">
+
+</head>
+<body>
+    <a href="{{ url_for('site_blocked')}}"></a>
+    <p style="color: rgb(7, 7, 7);"> Site has been blocked for : {{ remainingTime }}</p>
+</body>
+</html>
