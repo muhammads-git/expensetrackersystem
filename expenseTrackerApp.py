@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import time
 from dotenv import load_dotenv
-from forms import RegisterForm,LoginForm
+from forms import RegisterForm,LoginForm,addExpenseForm
 from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 
@@ -76,7 +76,7 @@ def login():
                 session['tries'] = 0
                 session['user_id'] = user_data[0]
                 flash('Successfully login','success')
-                return 'Add expenses'
+                return redirect(url_for('add_expense'))
             else:
                 session['tries'] += 1
                 if session['tries'] == 2:
@@ -112,8 +112,40 @@ def site_blocked():
         return render_template('block_user.html', remainingTime=remainingTime)
     
 
+##### expenses
+@app.route('/add_expenses',methods=['POST','GET'])
+def add_expense():
+    form = addExpenseForm()
     
+    if form.validate_on_submit():
+        expenseName = form.expense_name.data.capitalize()
+        expenseAmount = form.expense_amount.data
+        expenseCategory = form.expense_category.data.capitalize()
+        expenseDescription = form.expense_description.data.capitalize()
 
+        # open db
+        cursor = mysql.connection.cursor()
+        cursor.execute('INSERT INTO expenses (user_id,expense_name,amount,category,description) VALUES (%s,%s,%s,%s,%s)',
+                       (session['user_id'],expenseName,expenseAmount,expenseCategory,expenseDescription))
+        # commit changes
+        mysql.connection.commit()
+        # close db
+        cursor.close()
+
+        # Flash message
+        flash('Expense added successfully','success')
+        return redirect(url_for('show_expenses'))
+    
+    return render_template('addExpenses.html',form=form)
+
+@app.route('/show_expenses',methods=['GET'])
+def show_expenses():
+    # fetch data from db and return
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT id,expense_name,amount,category,description FROM expenses WHERE user_id=%s',(session['user_id'],))
+    # save in variable
+    expense_data = cursor.fetchall()
+    return render_template('show_expenses.html', expense_data=expense_data)
 
 
 app.run(debug=True,port=5000)
