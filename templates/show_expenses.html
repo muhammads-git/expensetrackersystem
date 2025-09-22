@@ -20,7 +20,7 @@
         </ul>
     {% endif %}
     {% endwith %}
-    
+
         <form method= 'GET' action="{{ url_for('show_expenses') }}">
             <table border="1">              
                 <tr>
@@ -29,6 +29,7 @@
                     <th>Amount (PKR)</th>
                     <th>Category</th>
                     <th>Description</th>
+                    
                 </tr>
                 {% for expense in expense_data %}
                 <tr>
@@ -37,7 +38,19 @@
                     <td>{{ expense[2] }}</td>
                     <td>{{ expense[3] }}</td>
                     <td>{{ expense[4] }}</td>
+                    <td>
+                        <form action="{{ url_for('edit_expense', id = expense[0]) }}">
+                        <button type="submit">Edit</button>
+                        </form>
+
+                    </td>
+
+                    <!-- <form action="{{ url_for('edit_expense', id = expense[0]) }}">
+                    <button type="submit">Edit</button>
+                    </form> -->
                 </tr>
+
+                
                 {% endfor %}
             </table>
         </form>

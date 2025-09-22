@@ -147,7 +147,30 @@ def show_expenses():
     expense_data = cursor.fetchall()
     return render_template('show_expenses.html', expense_data=expense_data)
 
+@app.route('/edit_expense/<int:id>', methods=['GET'])
+def edit_expense(id):
+    # fetch data from 
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT id,expense_name,amount,category,description FROM expenses WHERE id=%s',(id,))
+    cursor.close()
+    edit_ = cursor.fetchone()
+    return redirect(url_for('update_expenses'))
+    
+
+@app.route('/update_expenses', methods=['GET','POST'])
+def update_expenses():
+    form = addExpenseForm()
+    updated_expense = form.expense_name.data
+    updated_amount = form.expense_amount.data
+    updated_category = form.expense_category.data
+    updated_description = form.expense_description.data
+
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO expenses (user_id,expense_name,amount,category,description) VALUES (%s,%s,%s,%s,%s)',
+                   (session['user_id'],updated_expense,updated_amount,updated_category,updated_description))
+    mysql.connection.commit()
+    cursor.close()
+    return render_template('show_expenses.html',form=form)
 
 app.run(debug=True,port=5000)
-
 
