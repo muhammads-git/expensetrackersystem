@@ -19,15 +19,17 @@
             </ul>
         {% endif %}
         {% endwith %}
-    
-        <form method="POST" action="{{ url_for('add_expense') }}">
+         
+        <!-- get data -->
+        {% for expense in expense_data %}
+        <form method="POST" action="{{ url_for('update_expenses', id = expense[0]) }}">
             {{ form.hidden_tag() }}
 
             {{ form.expense_name.label }} <br>
-            {{ form.expense_name(size=20,placeholder="Add expense") }} <br>
+            {{ form.expense_name(size=20,placeholder="New expense") }} <br>
 
             {{ form.expense_amount.label }} <br>
-            {{ form.expense_amount(size=18,placeholder="Add amount in PKR") }} <br>
+            {{ form.expense_amount(size=18,placeholder="Add new amount in PKR") }} <br>
 
             {{ form.expense_category.label }} <br>
             {{ form.expense_category(size=20,placeholder="Food/Bill/Shopping etc") }} <br>
@@ -36,12 +38,8 @@
             {{ form.expense_description(size=20,placeholder="Write description") }} <br> <br>
 
             {{ form.submit() }}
-
-
-        </form>
-        <form method="GET" action="{{ url_for('show_expenses') }}">
-            <button type="submit">YOUR EXPENSES</button>
-        </form>
+         </form>            
+         {% endfor %}
     </center>
 </body>
 </html>

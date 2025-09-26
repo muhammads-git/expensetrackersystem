@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms.validators import DataRequired,Length,Email
-from wtforms import StringField,PasswordField,EmailField,SubmitField,IntegerField
+from wtforms.validators import DataRequired,Length,Email,NumberRange
+from wtforms import StringField,PasswordField,EmailField,SubmitField,IntegerField,TextAreaField,DecimalField
 
 
 class RegisterForm(FlaskForm):
@@ -18,9 +18,8 @@ class LoginForm(FlaskForm):
 
 # expenses Form
 class addExpenseForm(FlaskForm):
-    expense_name = StringField('Add Expense', validators=[DataRequired(),Length(max=20)])
-    expense_amount = IntegerField('Add Amount', validators=[DataRequired()])
-    expense_category = StringField('Category',validators=[DataRequired()])
-    expense_description = StringField('Description',validators=[DataRequired(),Length(max=100)])
+    expense_name = StringField("Expense Name", validators=[DataRequired(), Length(min=1, max=50)])
+    expense_amount = DecimalField("Amount", validators=[DataRequired(), NumberRange(min=1)])
+    expense_category = StringField("Category", validators=[DataRequired()])
+    expense_description = TextAreaField("Description", validators=[Length(max=200)])
     submit = SubmitField('ADD')
-
