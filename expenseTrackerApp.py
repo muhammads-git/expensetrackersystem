@@ -149,11 +149,11 @@ def show_expenses():
 
 
 # ---------------- EDIT & UPDATE -----------------
-@app.route('/edit_expense/<int:id>', methods=['GET'])
+@app.route('/edit_expense/<int:id>', methods=['GET', 'POST'])
 def edit_expense(id):
     cursor = mysql.connection.cursor()
     cursor.execute(
-        'SELECT id,expense_name,amount,category,description FROM expenses WHERE id=%s AND user_id=%s',
+        'SELECT id, expense_name, amount, category, description FROM expenses WHERE id=%s AND user_id=%s',
         (id, session['user_id']),
     )
     expense = cursor.fetchone()
@@ -162,19 +162,16 @@ def edit_expense(id):
     if not expense:
         return "Expense not found or doesn't belong to the user", 404
 
-    # Pre-fill form with current data
     form = addExpenseForm()
-    form.expense_name.data = expense[1]
-    form.expense_amount.data = expense[2]
-    form.expense_category.data = expense[3]
-    form.expense_description.data = expense[4]
 
-    return render_template('Update_expense.html', form=form, id=id)
+    if request.method == 'GET':
+        # Pre-fill form
+        form.expense_name.data = expense[1]
+        form.expense_amount.data = expense[2]
+        form.expense_category.data = expense[3]
+        form.expense_description.data = expense[4]
+        return render_template('edit_expense.html', form=form, id=id)
 
-
-@app.route('/update_expenses/<int:id>', methods=['POST'])
-def update_expenses(id):
-    form = addExpenseForm()
     if form.validate_on_submit():
         new_expense = form.expense_name.data.capitalize()
         new_amount = form.expense_amount.data
@@ -193,7 +190,7 @@ def update_expenses(id):
         return redirect(url_for('show_expenses'))
 
     flash('Form validation failed. Try again!', 'danger')
-    return redirect(url_for('edit_expense', id=id))
+    return render_template('edit_expense.html', form=form, id=id)
 
 
 if __name__ == '__main__':

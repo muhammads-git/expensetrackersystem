@@ -18,8 +18,8 @@ class LoginForm(FlaskForm):
 
 # expenses Form
 class addExpenseForm(FlaskForm):
-    expense_name = StringField("Expense Name", validators=[DataRequired(), Length(min=1, max=50)])
-    expense_amount = DecimalField("Amount", validators=[DataRequired(), NumberRange(min=1)])
-    expense_category = StringField("Category", validators=[DataRequired()])
-    expense_description = TextAreaField("Description", validators=[Length(max=200)])
+    expense_name = StringField("Expense Name", validators=[DataRequired(), Length(min=1, max=50)], render_kw={"placeholder": "Add Expense","size":20})
+    expense_amount = DecimalField("Amount", validators=[DataRequired(), NumberRange(min=1)],render_kw={"placeholder": "Add Amount","size":20})
+    expense_category = StringField("Category", validators=[DataRequired()],render_kw={"placeholder": "Category","size":18})
+    expense_description = TextAreaField("Description", validators=[Length(max=200)],render_kw={"placeholder": "Write Description","size":20})
     submit = SubmitField('ADD')
