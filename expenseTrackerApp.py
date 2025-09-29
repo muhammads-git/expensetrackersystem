@@ -198,19 +198,22 @@ def report():
 
     cursor = mysql.connection.cursor()
     try:
-        cursor.execute('' \
-        'SELECT category, SUM(amount) AS total_spent',
-        'FROM expenses WHERE user_id=%s',
-        'AND MONTH(expense_date) = MONTH(CURRENT_DATE())',
-        'AND YEAR(expense_date) = YEAR(CURRENT_DATE())',
-        'GROUP BY category',
-        (session['user_id'],))
-
+        cursor.execute('''
+    SELECT category, SUM(amount) AS total_spent
+    FROM expenses
+    WHERE user_id = %s
+      AND MONTH(expense_date) = MONTH(CURRENT_DATE())
+      AND YEAR(expense_date) = YEAR(CURRENT_DATE())
+    GROUP BY category
+                ''', (session['user_id'],))
+        
     except Exception as e:
         flash(f'Database error: {e}','warning')
 
-        # save it to a variable
+    # save it to a variable
     total_spent_data = cursor.fetchall()
+    # close db
+    cursor.close()
     if total_spent_data:
         # return data
         return render_template('monthly_report.html', total_spent_data=total_spent_data)
