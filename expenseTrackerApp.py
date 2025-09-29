@@ -192,6 +192,31 @@ def edit_expense(id):
     flash('Form validation failed. Try again!', 'danger')
     return render_template('edit_expense.html', form=form, id=id)
 
+@app.route('/reports', methods=['GET'])
+def report():
+    # fetch data from backend
+
+    cursor = mysql.connection.cursor()
+    try:
+        cursor.execute('' \
+        'SELECT category, SUM(amount) AS total_spent',
+        'FROM expenses WHERE user_id=%s',
+        'AND MONTH(expense_date) = MONTH(CURRENT_DATE())',
+        'AND YEAR(expense_date) = YEAR(CURRENT_DATE())',
+        'GROUP BY category',
+        (session['user_id'],))
+
+    except Exception as e:
+        flash(f'Database error: {e}','warning')
+
+        # save it to a variable
+    total_spent_data = cursor.fetchall()
+    if total_spent_data:
+        # return data
+        return render_template('monthly_report.html', total_spent_data=total_spent_data)
+    else:
+        flash('No monthly report found','warning')
+        return redirect('show_expenses')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
