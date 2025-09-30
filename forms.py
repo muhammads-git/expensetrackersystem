@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired,Length,Email,NumberRange
 from wtforms import StringField,PasswordField,EmailField,SubmitField,IntegerField,TextAreaField,DecimalField,SelectField
-
+import datetime
 
 class RegisterForm(FlaskForm):
     username = StringField('Username',validators=[DataRequired(),Length(min=6,max=20)])
@@ -27,8 +27,22 @@ class addExpenseForm(FlaskForm):
 
 # Report Form
 class ReportForm(FlaskForm):
-    month = SelectField('Month', choices=[(1,"Jan"),(2,'Feb')])
-    year = SelectField('Year', choices=[(2024,'2024'),(2025,'2025')])
-    submit = SubmitField('Show Reports')
-
+    month = SelectField(
+        "Month",
+        choices=[
+            ("1", "January"), ("2", "February"), ("3", "March"),
+            ("4", "April"), ("5", "May"), ("6", "June"),
+            ("7", "July"), ("8", "August"), ("9", "September"),
+            ("10", "October"), ("11", "November"), ("12", "December")
+        ],
+        validators=[DataRequired()]
+    )
     
+    # dynamic years
+    current_years = datetime.date.today().year
+    # year
+    years = [(str(y),str(y)) for y in range(current_years -5, current_years + 5)]
+
+    year = SelectField('Year',choices=years, validators=[DataRequired()])
+    submit = SubmitField('Generate Reports')
+
