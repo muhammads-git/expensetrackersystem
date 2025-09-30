@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.validators import DataRequired,Length,Email,NumberRange
-from wtforms import StringField,PasswordField,EmailField,SubmitField,IntegerField,TextAreaField,DecimalField
+from wtforms import StringField,PasswordField,EmailField,SubmitField,IntegerField,TextAreaField,DecimalField,SelectField
 
 
 class RegisterForm(FlaskForm):
@@ -23,3 +23,12 @@ class addExpenseForm(FlaskForm):
     expense_category = StringField("Category", validators=[DataRequired()],render_kw={"placeholder": "Category","size":18})
     expense_description = TextAreaField("Description", validators=[Length(max=200)],render_kw={"placeholder": "Write Description","size":20})
     submit = SubmitField('ADD')
+
+
+# Report Form
+class ReportForm(FlaskForm):
+    month = SelectField('Month', choices=[(1,"Jan"),(2,'Feb')])
+    year = SelectField('Year', choices=[(2024,'2024'),(2025,'2025')])
+    submit = SubmitField('Show Reports')
+
+    

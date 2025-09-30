@@ -1,7 +1,7 @@
 from flask import Flask, session, url_for, redirect, request, render_template, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-from forms import RegisterForm, LoginForm, addExpenseForm
+from forms import RegisterForm, LoginForm, addExpenseForm,ReportForm
 from flask_bcrypt import Bcrypt
 import time
 
@@ -192,34 +192,33 @@ def edit_expense(id):
     flash('Form validation failed. Try again!', 'danger')
     return render_template('edit_expense.html', form=form, id=id)
 
-@app.route('/reports', methods=['GET'])
+@app.route('/reports', methods=['POST','GET'])
 def report():
-    # fetch data from backend
+    # object for reportsform.
+    form = ReportForm()
+    total_spent_data = []
+    if form.validate_on_submit():
+        month = form.month.data 
+        year = form.year.data
 
-    cursor = mysql.connection.cursor()
-    try:
-        cursor.execute('''
-    SELECT category, SUM(amount) AS total_spent
-    FROM expenses
-    WHERE user_id = %s
-      AND MONTH(expense_date) = MONTH(CURRENT_DATE())
-      AND YEAR(expense_date) = YEAR(CURRENT_DATE())
-    GROUP BY category
-                ''', (session['user_id'],))
+        # open db
+        cursor = mysql.connection.cursor()
+        cursor.execute(""" SELECT category, SUM(amount) AS total_spent
+                       FROM expenses
+                       WHERE user_id=%s
+                            AND MONTH(expense_date)=%s
+                            AND YEAR(expense_date)=%s
+                       GROUP BY category
+                        """,(session['user_id'],month,year))
         
-    except Exception as e:
-        flash(f'Database error: {e}','warning')
+        total_spent_data = cursor.fetchall()
+        print(total_spent_data)
+        cursor.close()
+        return redirect(url_for('report'))
+    
+    flash('No form available','message')
+    return render_template('monthly_report.html', form=form,total_spent_data=total_spent_data)
 
-    # save it to a variable
-    total_spent_data = cursor.fetchall()
-    # close db
-    cursor.close()
-    if total_spent_data:
-        # return data
-        return render_template('monthly_report.html', total_spent_data=total_spent_data)
-    else:
-        flash('No monthly report found','warning')
-        return redirect('show_expenses')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

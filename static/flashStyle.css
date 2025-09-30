@@ -112,6 +112,7 @@ a.btn, button, input[type=submit] {
 .success { background: #28a745; color: #fff; }
 .warning { background: #ffc107; color: #212529; }
 .danger  { background: #dc3545; color: #fff; }
+.message { background: burlywood; color: #333;}
 
 @keyframes slideFadeIn {
   from { opacity: 0; transform: translateY(-10px); }

@@ -2,37 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Expense</title>
+    <title>Monthly Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='flashStyle.css') }}">
 </head>
 <body>
     <center>
-                  <!-- Flash messages -->
-      {% with messages = get_flashed_messages(with_categories=True)%}
-      {% if messages %}
-         <ul class ='flashes'>
-         {% for category, message in messages %}
-             <li class = "{{category}}">{{message}}</li>
-         {% endfor %}
-         </ul>
-      {% endif %}
-      {% endwith %}
-    
-      <h2>Monthly Reports</h2>
-      <table>
-         <tr>
-            <th>Category</th>
-            <th>Total Spent</th>
-         </tr>
-                  <!-- # jinja -->
-         {% for data in total_spent_data %}
-            <tr>
-               <th>{{ data[0] }}</th>
-               <th>{{ data[1] }}</th>
-            </tr>
-         {% endfor %}
-      </table>
-   </center>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Generate Monthly Expense Report</h2>
+
+        <!-- 🔹 The form -->
+        <form method="POST" action="{{ url_for('report') }}">
+            {{ form.hidden_tag() }}
+
+            {{ form.month.label }} <br>
+            {{ form.month() }} <br><br>
+
+            {{ form.year.label }} <br>
+            {{ form.year() }} <br><br>
+
+            {{ form.submit() }}
+        </form>
+
+        <hr>
+
+        <!-- 🔹 Show results only if available -->
+        {% if total_spent_data and total_spent_data|length > 0 %}
+            <h3>Report Results</h3>
+            <table border="1" cellpadding="8">
+                <tr>
+                    <th>Category</th>
+                    <th>Total Spent (PKR)</th>
+                </tr>
+                {% for row in total_spent_data %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No report data available yet.</p>
+        {% endif %}
+    </center>
 </body>
 </html>
