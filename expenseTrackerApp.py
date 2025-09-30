@@ -213,10 +213,8 @@ def report():
         
         total_spent_data = cursor.fetchall()
         print(total_spent_data)
-        cursor.close()
-        return redirect(url_for('report'))
-    
-    flash('No form available','message')
+        cursor.close()   
+         
     return render_template('monthly_report.html', form=form,total_spent_data=total_spent_data)
 
 
